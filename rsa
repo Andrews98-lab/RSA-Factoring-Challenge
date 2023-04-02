@@ -1,34 +1,43 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import sys
+import math
 
-def is_prime(n):
+def is_prime(num):
     """
-    Check if a given number n is prime.
+    Check if the given number is prime.
     """
-    if n < 2:
+    if num < 2:
         return False
-    for i in range(2, int(n**0.5)+1):
-        if n % i == 0:
+    for i in range(2, int(math.sqrt(num))+1):
+        if num % i == 0:
             return False
     return True
 
-def factorize(n):
+def factorize_rsa(num):
     """
-    Factorize a given number n into a product of two prime numbers.
+    Factorize the given RSA number and return the prime factors as a tuple.
     """
-    if n < 2:
-        return None
-    for i in range(2, int(n**0.5)+1):
-        if n % i == 0 and is_prime(i) and is_prime(n//i):
-            return i, n//i
+    for i in range(2, int(math.sqrt(num))+1):
+        if num % i == 0:
+            p = i
+            q = num // i
+            if is_prime(p) and is_prime(q):
+                return (p, q)
     return None
 
-if __name__ == '__main__':
-    with open(sys.argv[1], "r") as fp:
-        n = int(fp.readline().strip())
-        factors = factorize(n)
-        if factors:
-            print("{}={}*{}".format(n, factors[0], factors[1]))
-        else:
-            print("Unable to factorize {} into two primes.".format(n))
+def main():
+    """
+    Read the input file and factorize the RSA number.
+    """
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        sys.exit(1)
 
+    with open(sys.argv[1], 'r') as infile:
+        num = int(infile.readline().strip())
+        factors = factorize_rsa(num)
+        if factors:
+            print(f"{num}={factors[0]}*{factors[1]}")
+
+if __name__ == '__main__':
+    main()
