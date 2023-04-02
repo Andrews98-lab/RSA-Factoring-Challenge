@@ -1,0 +1,11 @@
+import sys
+from sympy import factorint
+
+if __name__ == "__main__":
+    filename = sys.argv[1]
+    with open(filename, 'r') as f:
+        n = int(f.read().strip())
+        factors = factorint(n)
+        p, q = factors.keys()
+        print(f"{n}={p}*{q}")
+
