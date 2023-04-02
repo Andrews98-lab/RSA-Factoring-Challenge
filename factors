@@ -1,5 +1,25 @@
-#!/usr/bin/env bash
-# Factorize as many numbers as possible into a product of two smaller numbers.
+#!/usr/bin/python3
+import sys
 
-gcc factors.c -o a
-./a $1
+def factorize(n):
+    factors = []
+    for i in range(2, n):
+        if n % i == 0:
+            factors.append(i)
+    if not factors:
+        return None
+    else:
+        return factors[-1], n // factors[-1]
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print('Usage: factors <file>')
+        sys.exit(1)
+
+    with open(sys.argv[1], 'r') as f:
+        for line in f:
+            n = int(line.strip())
+            factors = factorize(n)
+            if factors is not None:
+                print(f'{n}={factors[0]}*{factors[1]}')
+
