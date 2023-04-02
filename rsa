@@ -1,34 +1,41 @@
 #!/usr/bin/python3
+import sys
 
-from math import gcd
-from sys import argv
+def is_prime(n):
+    """
+    Check if a given number n is prime.
+    """
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5)+1):
+        if n % i == 0:
+            return False
+    return True
 
+def factorize(n):
+    """
+    Factorize a given number n into a product of two prime numbers.
+    """
+    for i in range(2, int(n**0.5)+1):
+        if n % i == 0 and is_prime(i) and is_prime(n//i):
+            return (i, n//i)
+    return (n, 1)
 
-def pollards_rho(n):
-    x = 2
-    y = 2
-    d = 1
-    f = lambda x: (x**2 + 1) % n
-    while d == 1:
-        x = f(x)
-        y = f(f(y))
-        d = gcd(abs(x - y), n)
-    if d != n:
-        return d
+def main():
+    """
+    Read the input file, factorize each number, and print the result.
+    """
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        return
+    try:
+        with open(sys.argv[1], 'r') as f:
+            n = int(f.readline().strip())
+            p, q = factorize(n)
+            print("{}={}*{}".format(n, p, q))
+    except IOError:
+        print("File not found")
 
+if __name__ == '__main__':
+    main()
 
-def read_file():
-    with open(argv[1]) as f:
-        for number in f:
-            num = int(number)
-            if num % 2 == 0:
-                print("{:d}={}*{}".format(num, num // 2, 2))
-            else:
-                p = pollards_rho(num)
-                f1 = p
-                f2 = int(num / p)
-                print("{}={}*{}".format(num, f1, f2))
-
-
-if __name__ == "__main__":
-    read_file()
