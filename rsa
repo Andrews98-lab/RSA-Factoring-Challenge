@@ -16,26 +16,19 @@ def factorize(n):
     """
     Factorize a given number n into a product of two prime numbers.
     """
+    if n < 2:
+        return None
     for i in range(2, int(n**0.5)+1):
         if n % i == 0 and is_prime(i) and is_prime(n//i):
-            return (i, n//i)
-    return (n, 1)
-
-def main():
-    """
-    Read the input file, factorize each number, and print the result.
-    """
-    if len(sys.argv) != 2:
-        print("Usage: rsa <file>")
-        return
-    try:
-        with open(sys.argv[1], 'r') as f:
-            n = int(f.readline().strip())
-            p, q = factorize(n)
-            print("{}={}*{}".format(n, p, q))
-    except IOError:
-        print("File not found")
+            return i, n//i
+    return None
 
 if __name__ == '__main__':
-    main()
+    with open(sys.argv[1], "r") as fp:
+        n = int(fp.readline().strip())
+        factors = factorize(n)
+        if factors:
+            print("{}={}*{}".format(n, factors[0], factors[1]))
+        else:
+            print("Unable to factorize {} into two primes.".format(n))
 
