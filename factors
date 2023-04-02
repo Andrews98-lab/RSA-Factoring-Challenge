@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 import sys
+import math
 
 def factorize(n):
-    factors = []
-    for i in range(2, n):
+    for i in range(2, int(math.sqrt(n))+1):
         if n % i == 0:
-            factors.append(i)
-    if not factors:
-        return None
-    else:
-        return factors[-1], n // factors[-1]
+            return i, n // i
+    return n, 1
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -19,7 +16,6 @@ if __name__ == '__main__':
     with open(sys.argv[1], 'r') as f:
         for line in f:
             n = int(line.strip())
-            factors = factorize(n)
-            if factors is not None:
-                print(f'{n}={factors[0]}*{factors[1]}')
+            p, q = factorize(n)
+            print(f'{n}={p}*{q}')
 
