@@ -1,32 +1,46 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
+import argparse
+import math
 import sys
+import time
 
-def factorize(n):
+def factorize(num):
     """
-    Factorize a given number n into a product of two smaller numbers.
+    Factorize the given number and return the factors as a tuple.
     """
-    for i in range(2, int(n**0.5)+1):
-        if n % i == 0:
-            return (i, n//i)
-    return (n, 1)
+    if num % 2 == 0:
+        return (2, num // 2)
+    limit = int(math.sqrt(num)) + 1
+    for i in range(3, limit, 2):
+        if num % i == 0:
+            return (i, num // i)
+    return None
 
 def main():
     """
-    Read the input file, factorize each number, and print the result.
+    Read the input file and factorize the numbers.
     """
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>")
-        return
-    try:
-        with open(sys.argv[1], 'r') as f:
-            for line in f:
-                n = int(line.strip())
-                p, q = factorize(n)
-                print("{}={}*{}".format(n, p, q))
-    except IOError:
-        print("File not found")
+    parser = argparse.ArgumentParser(description='Factorize a list of numbers')
+    parser.add_argument('file', type=str, help='the input file')
+    args = parser.parse_args()
+
+    start_time = time.monotonic()
+    with open(args.file, 'r') as infile:
+        for line in infile:
+            try:
+                num = int(line.strip())
+                if num <= 1:
+                    continue
+                factors = factorize(num)
+                if factors:
+                    print(f"{num}={factors[0]}*{factors[1]}")
+            except ValueError:
+                # skip non-integer values
+                continue
+            if time.monotonic() - start_time >= 5:
+                print("Time limit exceeded.")
+                sys.exit(1)
 
 if __name__ == '__main__':
     main()
-
